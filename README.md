@@ -1,4 +1,4 @@
-# Presto .NET Core Client 
+# Presto netstandard2.1 Client 
 
 Presto is a distributed SQL query engine for big data.
 
@@ -6,5 +6,5 @@ See the [User Manual](https://prestosql.io/docs/current/) for deployment instruc
 
 ## Requirements
 
-* .NET Core
+* netstandard2.1
 
