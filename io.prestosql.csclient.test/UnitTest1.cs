@@ -1,24 +1,26 @@
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data.Common;
 using io.prestosql.client;
+using Xunit;
 
-namespace io.prestosql.test
+namespace io.prestosql.csclient.test
 {
-    [TestClass]
+    //http://pulsar.apache.org/docs/en/sql-getting-started/
+    //https://pulsar.apache.org/docs/en/sql-rest-api/
+    //docker run -it -p 6650:6650 -p 8080:8080 -p 8081:8081 --mount source=pulsardata,target=/pulsar/data --mount source=pulsarconf,target=/pulsar/conf apachepulsar/pulsar:2.5.0 bin/pulsar standalone
     public class UnitTest1
     {
-        [TestMethod]
+        [Fact]
         public void FirstTest()
         {
             using (DbConnection Conn = new PrestoSqlDbConnection())
             {
-                Conn.ConnectionString = "http://localhost:8080";
+                Conn.ConnectionString = "http://localhost:8081";
                 Conn.Open();
 
                 using (DbCommand Cmd = Conn.CreateCommand())
                 {
-                    Cmd.CommandText = "VALUES (true, TINYINT '1', SMALLINT '1', INTEGER '1', BIGINT '1', REAL '1.0', DOUBLE '1.0', DECIMAL '123.456', VARCHAR 'Hello World!', CHAR 's', VARBINARY '1111', DATE '2019-01-01', TIME '01:02:03.456', TIME '01:02:03.456 America/Los_Angeles', TIMESTAMP '2001-08-22 03:04:05.321', TIMESTAMP '2001-08-22 03:04:05.321 America/Los_Angeles', INTERVAL '3' MONTH, INTERVAL '2' DAY, ARRAY[1, 2, 3], MAP(ARRAY['foo', 'bar'], ARRAY[1, 2]), CAST(ROW(1, 2.0) AS ROW(x BIGINT, y DOUBLE)), IPADDRESS '10.0.0.1', IPADDRESS '2001:db8::1')";
+                    Cmd.CommandText = "show catalogs";
 
                     using (DbDataReader Reader = Cmd.ExecuteReader())
                     {
@@ -35,7 +37,7 @@ namespace io.prestosql.test
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void SingleResultTest()
         {
             using (DbConnection Conn = new PrestoSqlDbConnection())
@@ -50,13 +52,13 @@ namespace io.prestosql.test
                     int v = Convert.ToInt32(Cmd.ExecuteScalar());
 
                     if (v != 1)
-                        Assert.Fail("Invalid return value");
+                        Assert.False(false,"Invalid return value");
                 }
             }
         }
 
 
-        [TestMethod]
+        [Fact]
         public void ErrorTest()
         {
             using (DbConnection Conn = new PrestoSqlDbConnection())
@@ -81,7 +83,7 @@ namespace io.prestosql.test
                             }
                         }
 
-                        Assert.Fail();
+                        Assert.False(false);
                     }
                     catch (PrestoSqlException ex)
                     {
@@ -92,7 +94,7 @@ namespace io.prestosql.test
         }
 
 
-        [TestMethod]
+        [Fact]
         public void SecondTest()
         {
             using (DbConnection Conn = new PrestoSqlDbConnection())
@@ -118,6 +120,5 @@ GROUP BY orderpriority ORDER BY orderpriority";
                 }
             }
         }
-
     }
 }

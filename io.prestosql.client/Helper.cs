@@ -33,13 +33,15 @@ namespace io.prestosql.client
             }
             try
             {
-                using (var response = http.GetResponse())
+                using var response = http.GetResponse();
+                using var stream = response.GetResponseStream();
+                if (stream != null)
                 {
-                    using (var stream = response.GetResponseStream())
-                    {
-                        return JsonConvert.DeserializeObject<T>(new StreamReader(stream).ReadToEnd());
-                    }
+                    using var sr = new StreamReader(stream);
+                    var str = sr.ReadToEnd();
+                    return JsonConvert.DeserializeObject<T>(str);
                 }
+                throw new NullReferenceException();
             }
             catch (WebException ex)
             {

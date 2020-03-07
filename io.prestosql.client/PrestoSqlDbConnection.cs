@@ -66,10 +66,9 @@ namespace io.prestosql.client
 
         internal QueryResults GetNextResult(Uri nextUri)
         {
-            WebHeaderCollection Headers = new WebHeaderCollection();
-            Headers.Add("Accept", "application/json");
-
-            return Helper.HttpRequest<QueryResults>("GET", nextUri.ToString(), "", Headers);
+            WebHeaderCollection Headers = new WebHeaderCollection {{"Accept", "application/json"}};
+            var result = Helper.HttpRequest<QueryResults>("GET", nextUri.ToString(), "", Headers);
+            return result;
         }
 
     }

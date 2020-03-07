@@ -3,6 +3,7 @@ using System.Data.Common;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace io.prestosql.client
@@ -18,7 +19,7 @@ namespace io.prestosql.client
         private Dictionary<string, int> m_ColumnIndex = new Dictionary<string, int>();
 
         private int m_RowCount = 0;
-        private object[][] m_Rows = null;
+        private List<List<object>>  m_Rows = null;
         private int m_RowIndex = -1;
         private object[] m_Fields = null;
 
@@ -30,11 +31,11 @@ namespace io.prestosql.client
 
         public override bool Read()
         {
-            if (m_RowIndex >= 0 && m_RowIndex < m_Rows.Length - 1)
+            if (m_RowIndex >= 0 && m_RowIndex < m_Rows.Count() - 1)
             {
                 m_RowIndex++;
 
-                m_Fields = m_Rows[m_RowIndex];
+                m_Fields = m_Rows[m_RowIndex].ToArray();
 
                 return true;
             }
@@ -46,7 +47,7 @@ namespace io.prestosql.client
 
                 if (m_Columns == null)
                 {
-                    m_Columns = Result.columns;
+                    if (Result != null) m_Columns = Result.columns;
                     m_ColumnCount = m_Columns.Count;
                     int i = 0;
                     foreach (Column col in m_Columns)
@@ -56,9 +57,9 @@ namespace io.prestosql.client
                 if (Result != null)
                 {
                     m_Rows = Result.data;
-                    m_RowCount += m_Rows?.Length ?? 0;
+                    m_RowCount += m_Rows?.Count ?? 0;
                     m_RowIndex = 0;
-                    m_Fields = m_Rows[m_RowIndex];
+                    m_Fields = m_Rows[m_RowIndex].ToArray();
 
                     return true;
                 }
