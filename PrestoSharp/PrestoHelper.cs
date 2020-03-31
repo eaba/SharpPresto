@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace io.prestosql.client
+namespace PrestoSharp
 {
     public class PrestoHelper
     {

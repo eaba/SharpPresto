@@ -1,65 +1,62 @@
 ﻿using System;
-using System.Data.Common;
-using System.Collections.Generic;
-using System.Text;
 using System.Collections;
+using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
-using Newtonsoft.Json.Linq;
+using PrestoSharp.v1;
 
-namespace io.prestosql.client
+namespace PrestoSharp
 {
-    using io.prestosql.client.v1;
-
     public class PrestoSqlDbDataReader : DbDataReader
     {
-        internal PrestoSqlDbCommand DBCommand { get; set; }
+        internal PrestoSqlDbCommand DbCommand { get; set; }
 
-        private int m_ColumnCount = 0;
-        private List<Column> m_Columns;
-        private Dictionary<string, int> m_ColumnIndex = new Dictionary<string, int>();
+        private int _mColumnCount = 0;
+        private List<Column> _mColumns;
+        private Dictionary<string, int> _mColumnIndex = new Dictionary<string, int>();
 
-        private int m_RowCount = 0;
-        private List<List<object>>  m_Rows = null;
-        private int m_RowIndex = -1;
-        private object[] m_Fields = null;
+        private int _mRowCount = 0;
+        private List<List<object>>  _mRows = null;
+        private int _mRowIndex = -1;
+        private object[] _mFields = null;
 
         internal PrestoSqlDbDataReader(PrestoSqlDbCommand Command)
         {
-            this.DBCommand = Command;
+            this.DbCommand = Command;
         }
 
 
         public override bool Read()
         {
-            if (m_RowIndex >= 0 && m_RowIndex < m_Rows.Count() - 1)
+            if (_mRowIndex >= 0 && _mRowIndex < _mRows.Count() - 1)
             {
-                m_RowIndex++;
+                _mRowIndex++;
 
-                m_Fields = m_Rows[m_RowIndex].ToArray();
+                _mFields = _mRows[_mRowIndex].ToArray();
 
                 return true;
             }
             else
             {
-                QueryResults Result = ((PrestoSqlDbCommand)this.DBCommand).GetNextResult();
-                while (Result != null && Result.data == null)
-                    Result = ((PrestoSqlDbCommand)this.DBCommand).GetNextResult();
+                QueryResults Result = ((PrestoSqlDbCommand)this.DbCommand).GetNextResult();
+                while (Result != null && Result.Data == null)
+                    Result = ((PrestoSqlDbCommand)this.DbCommand).GetNextResult();
 
-                if (m_Columns == null)
+                if (_mColumns == null)
                 {
-                    if (Result != null) m_Columns = Result.columns;
-                    m_ColumnCount = m_Columns.Count;
+                    if (Result != null) _mColumns = Result.Columns;
+                    _mColumnCount = _mColumns.Count;
                     int i = 0;
-                    foreach (Column col in m_Columns)
-                        m_ColumnIndex.Add(col.name, i++);
+                    foreach (Column col in _mColumns)
+                        _mColumnIndex.Add(col.Name, i++);
                 }
 
                 if (Result != null)
                 {
-                    m_Rows = Result.data;
-                    m_RowCount += m_Rows?.Count ?? 0;
-                    m_RowIndex = 0;
-                    m_Fields = m_Rows[m_RowIndex].ToArray();
+                    _mRows = Result.Data;
+                    _mRowCount += _mRows?.Count ?? 0;
+                    _mRowIndex = 0;
+                    _mFields = _mRows[_mRowIndex].ToArray();
 
                     return true;
                 }
@@ -75,57 +72,57 @@ namespace io.prestosql.client
 
         public override object this[int ordinal]
         {
-            get { return m_Fields[ordinal]; }
+            get { return _mFields[ordinal]; }
         }
 
         public override object this[string name]
         {
             get
             {
-                if (m_ColumnIndex.ContainsKey(name))
-                    return m_Fields[m_ColumnIndex[name]];
+                if (_mColumnIndex.ContainsKey(name))
+                    return _mFields[_mColumnIndex[name]];
                 else
                     return null;
             }
         }
 
         public override int Depth { get { return 0; } }
-        public override int FieldCount { get { return m_ColumnCount; } }
-        public override bool HasRows { get { return m_RowCount > 0; } }
+        public override int FieldCount { get { return _mColumnCount; } }
+        public override bool HasRows { get { return _mRowCount > 0; } }
         public override bool IsClosed { get { return false; } }
-        public override int RecordsAffected { get { return m_RowCount; } }
+        public override int RecordsAffected { get { return _mRowCount; } }
 
         public override string GetName(int ordinal)
         {
-            if (ordinal >= 0 && ordinal < m_ColumnCount)
-                return m_Columns[ordinal].name;
+            if (ordinal >= 0 && ordinal < _mColumnCount)
+                return _mColumns[ordinal].Name;
             else
                 return null;
         }
         public override Type GetFieldType(int ordinal)
         {
-            if (ordinal >= 0 && ordinal < m_ColumnCount)
-                return StandardTypes.MapType(m_Columns[ordinal].typeSignature.rawType);
+            if (ordinal >= 0 && ordinal < _mColumnCount)
+                return StandardTypes.MapType(_mColumns[ordinal].TypeSignature.PRESTO_RAW_TYPE);
             else
                 return null;
         }
 
         public override int GetOrdinal(string name)
         {
-            if (m_ColumnIndex.ContainsKey(name))
-                return m_ColumnIndex[name];
+            if (_mColumnIndex.ContainsKey(name))
+                return _mColumnIndex[name];
             else
                 return -1;
         }
 
         public override bool GetBoolean(int ordinal)
         {
-            return Convert.ToBoolean(m_Fields[ordinal]);
+            return Convert.ToBoolean(_mFields[ordinal]);
         }
 
         public override byte GetByte(int ordinal)
         {
-            return Convert.ToByte(m_Fields[ordinal]);
+            return Convert.ToByte(_mFields[ordinal]);
         }
 
         public override long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length)
@@ -135,7 +132,7 @@ namespace io.prestosql.client
 
         public override char GetChar(int ordinal)
         {
-            return Convert.ToChar(m_Fields[ordinal]);
+            return Convert.ToChar(_mFields[ordinal]);
         }
 
         public override long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
@@ -150,17 +147,17 @@ namespace io.prestosql.client
 
         public override DateTime GetDateTime(int ordinal)
         {
-            return Convert.ToDateTime(m_Fields[ordinal]);
+            return Convert.ToDateTime(_mFields[ordinal]);
         }
 
         public override decimal GetDecimal(int ordinal)
         {
-            return Convert.ToDecimal(m_Fields[ordinal]);
+            return Convert.ToDecimal(_mFields[ordinal]);
         }
 
         public override double GetDouble(int ordinal)
         {
-            return Convert.ToDouble(m_Fields[ordinal]);
+            return Convert.ToDouble(_mFields[ordinal]);
         }
 
         public override IEnumerator GetEnumerator()
@@ -170,7 +167,7 @@ namespace io.prestosql.client
 
         public override float GetFloat(int ordinal)
         {
-            return Convert.ToSingle(m_Fields[ordinal]);
+            return Convert.ToSingle(_mFields[ordinal]);
         }
 
         public override Guid GetGuid(int ordinal)
@@ -180,34 +177,34 @@ namespace io.prestosql.client
 
         public override short GetInt16(int ordinal)
         {
-            return Convert.ToInt16(m_Fields[ordinal]);
+            return Convert.ToInt16(_mFields[ordinal]);
         }
 
         public override int GetInt32(int ordinal)
         {
-            return Convert.ToInt32(m_Fields[ordinal]);
+            return Convert.ToInt32(_mFields[ordinal]);
         }
 
         public override long GetInt64(int ordinal)
         {
-            return Convert.ToInt64(m_Fields[ordinal]);
+            return Convert.ToInt64(_mFields[ordinal]);
         }
 
         public override string GetString(int ordinal)
         {
-            return Convert.ToString(m_Fields[ordinal]);
+            return Convert.ToString(_mFields[ordinal]);
         }
 
         public override object GetValue(int ordinal)
         {
-            return StandardTypes.Convert(m_Columns[ordinal].typeSignature.rawType, m_Fields[ordinal]);
+            return StandardTypes.Convert(_mColumns[ordinal].TypeSignature.PRESTO_RAW_TYPE, _mFields[ordinal]);
         }
 
         public override int GetValues(object[] values)
         {
-            values = m_Fields;
+            values = _mFields;
 
-            return m_Fields.Length;
+            return _mFields.Length;
         }
 
         public override bool IsDBNull(int ordinal)

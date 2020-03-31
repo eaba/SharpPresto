@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Net;
-using System.IO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace io.prestosql.client
+namespace PrestoSharp
 {
     internal class Helper
     {
-        internal static T HttpRequest<T>(string Method, string URL, string Request = "", WebHeaderCollection Headers = null)
+        internal static T HttpRequest<T>(string Method, string Url, string Request = "", WebHeaderCollection Headers = null)
         {
-            var http = WebRequest.Create(new Uri(URL));
+            var http = WebRequest.Create(new Uri(Url));
             http.Method = Method;
 
             if (Headers != null)
@@ -91,12 +90,12 @@ namespace io.prestosql.client
             return List;
         }
 
-        internal static IPAddress ParseIPAddress(string Data)
+        internal static IPAddress ParseIpAddress(string Data)
         {
-            IPAddress IP;
+            IPAddress ip;
 
-            if (IPAddress.TryParse(Data, out IP))
-                return IP;
+            if (IPAddress.TryParse(Data, out ip))
+                return ip;
             else
                 return null;
         }

@@ -2,41 +2,40 @@
 using System.Collections.Generic;
 using System.Net;
 using Newtonsoft.Json.Linq;
-using System.Text;
 
-namespace io.prestosql.client
+namespace PrestoSharp
 {
     internal class StandardTypes
     {
-        static Dictionary<string, Type> m_TypeMapping = new Dictionary<string, Type>();
+        static Dictionary<string, Type> _mTypeMapping = new Dictionary<string, Type>();
         static StandardTypes()
         {
-            m_TypeMapping.Add(StandardTypes.BIGINT, typeof(Int64));
-            m_TypeMapping.Add(StandardTypes.INTEGER, typeof(Int32));
-            m_TypeMapping.Add(StandardTypes.SMALLINT, typeof(Int16));
-            m_TypeMapping.Add(StandardTypes.TINYINT, typeof(Int16));
-            m_TypeMapping.Add(StandardTypes.BOOLEAN, typeof(bool));
-            m_TypeMapping.Add(StandardTypes.DATE, typeof(DateTime));
-            m_TypeMapping.Add(StandardTypes.DECIMAL, typeof(decimal));
-            m_TypeMapping.Add(StandardTypes.REAL, typeof(float));
-            m_TypeMapping.Add(StandardTypes.DOUBLE, typeof(double));
+            _mTypeMapping.Add(BIGINT, typeof(long));
+            _mTypeMapping.Add(INTEGER, typeof(int));
+            _mTypeMapping.Add(SMALLINT, typeof(short));
+            _mTypeMapping.Add(TINYINT, typeof(short));
+            _mTypeMapping.Add(BOOLEAN, typeof(bool));
+            _mTypeMapping.Add(DATE, typeof(DateTime));
+            _mTypeMapping.Add(DECIMAL, typeof(decimal));
+            _mTypeMapping.Add(REAL, typeof(float));
+            _mTypeMapping.Add(DOUBLE, typeof(double));
             // TODO: Map HYPER_LOG_LOG
             // TODO: Map QDIGEST
             // TODO: Map P4_HYPER_LOG_LOG
-            m_TypeMapping.Add(StandardTypes.INTERVAL_DAY_TO_SECOND, typeof(TimeSpan));
-            m_TypeMapping.Add(StandardTypes.INTERVAL_YEAR_TO_MONTH, typeof(TimeSpan));
-            m_TypeMapping.Add(StandardTypes.TIMESTAMP, typeof(DateTime));
-            m_TypeMapping.Add(StandardTypes.TIMESTAMP_WITH_TIME_ZONE, typeof(DateTime));
-            m_TypeMapping.Add(StandardTypes.TIME, typeof(DateTime));
-            m_TypeMapping.Add(StandardTypes.TIME_WITH_TIME_ZONE, typeof(DateTime));
-            m_TypeMapping.Add(StandardTypes.VARBINARY, typeof(byte[]));
-            m_TypeMapping.Add(StandardTypes.VARCHAR, typeof(String));
-            m_TypeMapping.Add(StandardTypes.CHAR, typeof(String));
+            _mTypeMapping.Add(INTERVAL_DAY_TO_SECOND, typeof(TimeSpan));
+            _mTypeMapping.Add(INTERVAL_YEAR_TO_MONTH, typeof(TimeSpan));
+            _mTypeMapping.Add(TIMESTAMP, typeof(DateTime));
+            _mTypeMapping.Add(TIMESTAMP_WITH_TIME_ZONE, typeof(DateTime));
+            _mTypeMapping.Add(TIME, typeof(DateTime));
+            _mTypeMapping.Add(TIME_WITH_TIME_ZONE, typeof(DateTime));
+            _mTypeMapping.Add(VARBINARY, typeof(byte[]));
+            _mTypeMapping.Add(VARCHAR, typeof(string));
+            _mTypeMapping.Add(CHAR, typeof(string));
             // TODO: Map ROW
             // TODO: Map ARRAY
             // TODO: Map MAP
             // TODO: Map JSON
-            m_TypeMapping.Add(StandardTypes.IPADDRESS, typeof(IPAddress));
+            _mTypeMapping.Add(IPADDRESS, typeof(IPAddress));
             // TODO: Map GEOMETRY
             // TODO: Map BING_TILE
 
@@ -73,34 +72,34 @@ namespace io.prestosql.client
 
         internal static Type MapType(string typeName)
         {
-            if (m_TypeMapping.ContainsKey(typeName))
-                return m_TypeMapping[typeName];
+            if (_mTypeMapping.ContainsKey(typeName))
+                return _mTypeMapping[typeName];
             else
                 return Type.Missing.GetType();
         }
 
         internal static object Convert(string typeName, object Obj)
         {
-            if (typeName == StandardTypes.VARBINARY)
+            if (typeName == VARBINARY)
                 return System.Convert.FromBase64String((string)Obj);
-            else if (typeName == StandardTypes.TIME_WITH_TIME_ZONE)
+            else if (typeName == TIME_WITH_TIME_ZONE)
                 return Helper.ParseTimeWithTimeZone((string)Obj);
-            else if (typeName == StandardTypes.TIMESTAMP_WITH_TIME_ZONE)
+            else if (typeName == TIMESTAMP_WITH_TIME_ZONE)
                 return Helper.ParseTimeWithTimeZone((string)Obj);
-            else if (typeName == StandardTypes.INTERVAL_YEAR_TO_MONTH)
+            else if (typeName == INTERVAL_YEAR_TO_MONTH)
                 return Helper.ParseIntervalYearToMonth((string)Obj);
-            else if (typeName == StandardTypes.INTERVAL_DAY_TO_SECOND)
+            else if (typeName == INTERVAL_DAY_TO_SECOND)
                 return Helper.ParseIntervalDayToSecond((string)Obj);
-            else if (typeName == StandardTypes.ARRAY)
+            else if (typeName == ARRAY)
                 return ((JArray)Obj).ToObject<object[]>();
-            else if (typeName == StandardTypes.MAP)
+            else if (typeName == MAP)
                 return Helper.ParseDictionary((JObject)Obj);
-            else if (typeName == StandardTypes.ROW)
+            else if (typeName == ROW)
                 return Obj; // TODO: Parse Row
-            else if (typeName == StandardTypes.JSON)
+            else if (typeName == JSON)
                 return ((JToken)Obj);
-            else if (typeName == StandardTypes.IPADDRESS)
-                return Helper.ParseIPAddress((string)Obj);
+            else if (typeName == IPADDRESS)
+                return Helper.ParseIpAddress((string)Obj);
             else
                 return System.Convert.ChangeType(Obj, MapType(typeName));
         }

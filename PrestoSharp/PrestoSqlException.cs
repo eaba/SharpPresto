@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using PrestoSharp.v1;
 
-namespace io.prestosql.client
+namespace PrestoSharp
 {
-    using io.prestosql.client.v1;
-
     public class PrestoSqlException : Exception
     {
         public QueryError QueryError { get; internal set; }
-        internal PrestoSqlException(QueryError error) : base(error.message)
+        internal PrestoSqlException(QueryError error) : base(error.Message)
         {
             this.QueryError = error;
         }
 
         internal static PrestoSqlException Create(QueryError error)
         {
-            switch(error.errorType)
+            switch(error.ErrorType)
             {
                 case "USER_ERROR": return new PrestoSqlUserException(error);
                 case "INTERNAL_ERROR": return new PrestoSqlInternalException(error);
@@ -27,13 +24,13 @@ namespace io.prestosql.client
             }
         }
 
-        public string GetMessage() { return this.QueryError.message; }
-        public string GetSqlState() { return this.QueryError.sqlState; }
-        public int GetErrorCode() { return this.QueryError.errorCode; }
-        public string GetErrorName() { return this.QueryError.errorName; }
-        public string GetErrorType() { return this.QueryError.errorType; }
-        public ErrorLocation GetErrorLocation() { return this.QueryError.errorLocation; }
-        public FailureInfo GetFailureInfo() { return this.QueryError.failureInfo; }
+        public string GetMessage() { return this.QueryError.Message; }
+        public string GetSqlState() { return this.QueryError.SqlState; }
+        public int GetErrorCode() { return this.QueryError.ErrorCode; }
+        public string GetErrorName() { return this.QueryError.ErrorName; }
+        public string GetErrorType() { return this.QueryError.ErrorType; }
+        public ErrorLocation GetErrorLocation() { return this.QueryError.ErrorLocation; }
+        public FailureInfo GetFailureInfo() { return this.QueryError.FailureInfo; }
     }
 
 

@@ -1,11 +1,11 @@
 using System;
 using System.Data.Common;
-using io.prestosql.client;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace io.prestosql.csclient.test
+namespace PrestoSharp.test
 {
+    //https://github.com/apache/pulsar/issues/6501
     //http://pulsar.apache.org/docs/en/sql-getting-started/
     //https://pulsar.apache.org/docs/en/sql-rest-api/
     //docker run -it -p 6650:6650 -p 8080:8080 -p 8081:8081 --mount source=pulsardata,target=/pulsar/data --mount source=pulsarconf,target=/pulsar/conf apachepulsar/pulsar:2.5.0 bin/pulsar standalone sql-worker function-worker

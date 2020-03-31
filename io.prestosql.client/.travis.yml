@@ -1,9 +1,0 @@
-﻿language: csharp
-solution: io.prestosql.client.sln
-mono: none
-dotnet: 2.1.502
-install:
-  - nuget restore solution-name.sln
-script:
-  - dotnet restore
-  - dotnet test

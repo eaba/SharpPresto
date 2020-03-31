@@ -1,17 +1,11 @@
 ﻿using System;
-using System.IO;
-using System.Net;
-using System.Data.Common;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Text;
 using System.Data;
+using System.Data.Common;
+using System.Net;
+using PrestoSharp.v1;
 
-namespace io.prestosql.client
+namespace PrestoSharp
 {
-    using io.prestosql.client.v1;
-
     public class PrestoSqlDbConnection : DbConnection
     {
         public PrestoSqlDbConnection()

@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Data.Common;
-using System.Net;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Text;
 using System.Data;
+using System.Data.Common;
+using PrestoSharp.v1;
 
-namespace io.prestosql.client
+namespace PrestoSharp
 {
-    using io.prestosql.client.v1;
-
     public class PrestoSqlDbCommand : DbCommand
     {
         public override string CommandText { get; set; }
@@ -39,12 +34,12 @@ namespace io.prestosql.client
 
         internal QueryResults GetNextResult()
         {
-            if (this.Result != null && this.Result.nextUri != null)
+            if (this.Result != null && this.Result.NextUri != null)
             {
-                this.Result = ((PrestoSqlDbConnection)this.DbConnection).GetNextResult(this.Result.nextUri);
+                this.Result = ((PrestoSqlDbConnection)this.DbConnection).GetNextResult(this.Result.NextUri);
 
-                if (this.Result.error != null)
-                    throw PrestoSqlException.Create(this.Result.error);
+                if (this.Result.Error != null)
+                    throw PrestoSqlException.Create(this.Result.Error);
 
                 return this.Result;
             }
