@@ -21,14 +21,12 @@ namespace PrestoSharp
 
             if (!string.IsNullOrEmpty(Request))
             {
-                ASCIIEncoding encoding = new ASCIIEncoding();
-                Byte[] bytes = encoding.GetBytes(Request);
+                var encoding = new ASCIIEncoding();
+                var bytes = encoding.GetBytes(Request);
 
-                using (Stream newStream = http.GetRequestStream())
-                {
-                    newStream.Write(bytes, 0, bytes.Length);
-                    newStream.Close();
-                }
+                using var newStream = http.GetRequestStream();
+                newStream.Write(bytes, 0, bytes.Length);
+                newStream.Close();
             }
             try
             {
@@ -46,11 +44,9 @@ namespace PrestoSharp
             {
                 if (ex.Response.ContentLength > 0)
                 {
-                    using (var stream = ex.Response.GetResponseStream())
-                    {
-                        var sr = new StreamReader(stream);
-                        throw new Exception("ERROR: " + sr.ReadToEnd());
-                    }
+                    using var stream = ex.Response.GetResponseStream();
+                    var sr = new StreamReader(stream);
+                    throw new Exception("ERROR: " + sr.ReadToEnd());
                 }
                 else
                     throw new Exception("ERROR: " + ex.Message);
@@ -60,7 +56,7 @@ namespace PrestoSharp
 
         internal static DateTime ParseTimeWithTimeZone(string Data)
         {
-            int iSep = Data.IndexOf(' ');
+            var iSep = Data.IndexOf(' ');
 
             return DateTime.Parse(Data.Substring(0, iSep));
             // TODO: Agregar TimeZone
@@ -68,23 +64,23 @@ namespace PrestoSharp
 
         internal static TimeSpan ParseIntervalYearToMonth(string Data)
         {
-            int iSep = Data.IndexOf('-');
+            var iSep = Data.IndexOf('-');
 
             return new TimeSpan(Convert.ToInt32(Data.Substring(0, iSep)) * 365 + Convert.ToInt32(Data.Substring(iSep + 1)) * 30, 0, 0, 0);
         }
 
         internal static TimeSpan ParseIntervalDayToSecond(string Data)
         {
-            int iSep = Data.IndexOf(' ');
+            var iSep = Data.IndexOf(' ');
 
             return TimeSpan.Parse(Data.Substring(iSep + 1)).Add(new TimeSpan(Convert.ToInt32(Data.Substring(0, iSep)), 0, 0, 0));
         }
 
         internal static Dictionary<string, object> ParseDictionary(JObject Obj)
         {
-            Dictionary<string, object> List = new Dictionary<string, object>();
+            var List = new Dictionary<string, object>();
 
-            foreach (JProperty Item in Obj.Properties())
+            foreach (var Item in Obj.Properties())
                 List.Add(Item.Name, Item.Value);
 
             return List;

@@ -16,7 +16,7 @@ namespace PrestoSharp
             this.ConnectionString = ConnectionString;
         }
 
-        public override string ConnectionString { get; set; }
+        public sealed override string ConnectionString { get; set; }
 
         public override string Database { get; }
 
@@ -50,17 +50,19 @@ namespace PrestoSharp
 
         internal QueryResults ExecuteQuery(string Query)
         {
-            WebHeaderCollection Headers = new WebHeaderCollection();
-            Headers.Add("Content-Type", "application/json");
-            Headers.Add("Accept", "application/json");
-            Headers.Add(PrestoHeaders.PRESTO_USER, "juan");
+            var Headers = new WebHeaderCollection
+            {
+                {"Content-Type", "application/json"},
+                {"Accept", "application/json"},
+                {PrestoHeaders.PRESTO_USER, "sharppresto"}
+            };
 
-            return Helper.HttpRequest<QueryResults>("POST", this.ConnectionString + "/v1/statement", Query, Headers);
+            return Helper.HttpRequest<QueryResults>("POST", ConnectionString + "/v1/statement", Query, Headers);
         }
 
         internal QueryResults GetNextResult(Uri nextUri)
         {
-            WebHeaderCollection Headers = new WebHeaderCollection {{"Accept", "application/json"}};
+            var Headers = new WebHeaderCollection {{"Accept", "application/json"}};
             var result = Helper.HttpRequest<QueryResults>("GET", nextUri.ToString(), "", Headers);
             return result;
         }

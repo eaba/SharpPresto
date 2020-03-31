@@ -22,7 +22,7 @@ namespace PrestoSharp
 
         internal PrestoSqlDbDataReader(PrestoSqlDbCommand Command)
         {
-            this.DbCommand = Command;
+            DbCommand = Command;
         }
 
 
@@ -38,17 +38,20 @@ namespace PrestoSharp
             }
             else
             {
-                QueryResults Result = ((PrestoSqlDbCommand)this.DbCommand).GetNextResult();
+                var Result = DbCommand.GetNextResult();
                 while (Result != null && Result.Data == null)
-                    Result = ((PrestoSqlDbCommand)this.DbCommand).GetNextResult();
+                    Result = DbCommand.GetNextResult();
 
                 if (_mColumns == null)
                 {
                     if (Result != null) _mColumns = Result.Columns;
-                    _mColumnCount = _mColumns.Count;
-                    int i = 0;
-                    foreach (Column col in _mColumns)
-                        _mColumnIndex.Add(col.Name, i++);
+                    if (_mColumns != null)
+                    {
+                        _mColumnCount = _mColumns.Count;
+                        var i = 0;
+                        foreach (var col in _mColumns)
+                            _mColumnIndex.Add(col.Name, i++);
+                    }
                 }
 
                 if (Result != null)

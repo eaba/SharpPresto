@@ -34,14 +34,14 @@ namespace PrestoSharp
 
         internal QueryResults GetNextResult()
         {
-            if (this.Result != null && this.Result.NextUri != null)
+            if (Result != null && Result.NextUri != null)
             {
-                this.Result = ((PrestoSqlDbConnection)this.DbConnection).GetNextResult(this.Result.NextUri);
+                Result = ((PrestoSqlDbConnection)DbConnection).GetNextResult(Result.NextUri);
 
-                if (this.Result.Error != null)
-                    throw PrestoSqlException.Create(this.Result.Error);
+                if (Result.Error != null)
+                    throw PrestoSqlException.Create(Result.Error);
 
-                return this.Result;
+                return Result;
             }
             else
                 return null;
@@ -49,32 +49,28 @@ namespace PrestoSharp
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
-            this.Result = ((PrestoSqlDbConnection)this.DbConnection).ExecuteQuery(this.CommandText);
+            Result = ((PrestoSqlDbConnection)DbConnection).ExecuteQuery(CommandText);
 
             return new PrestoSqlDbDataReader(this);
         }
 
         public override int ExecuteNonQuery()
         {
-            int Rows = 0;
+            var Rows = 0;
 
-            using (DbDataReader Reader = ExecuteDbDataReader(CommandBehavior.Default))
-            {
-                while (Reader.Read())
-                    Rows++;
-                return Rows;
-            }
+            using var Reader = ExecuteDbDataReader(CommandBehavior.SequentialAccess);
+            while (Reader != null && Reader.Read())
+                Rows++;
+            return Rows;
         }
 
         public override object ExecuteScalar()
         {
-            using (DbDataReader Reader = ExecuteDbDataReader(CommandBehavior.Default))
-            {
-                if (Reader.Read())
-                    return Reader[0];
-                else
-                    return null;
-            }
+            using var Reader = ExecuteDbDataReader(CommandBehavior.SequentialAccess);
+            if (Reader != null && Reader.Read())
+                return Reader[0];
+            else
+                return null;
         }
     }
 }

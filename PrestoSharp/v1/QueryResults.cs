@@ -5,7 +5,7 @@ namespace PrestoSharp.v1
 {
     public class QueryResults
     {
-        public String Id{ get; set; }
+        public string Id{ get; set; }
         public Uri InfoUri{ get; set; }
         public Uri PartialCancelUri{ get; set; }
         public Uri NextUri{ get; set; }
@@ -14,7 +14,7 @@ namespace PrestoSharp.v1
         public StatementStats Stats{ get; set; }
         public QueryError Error{ get; set; }
         public List<PrestoWarning> Warnings{ get; set; }
-        public String UpdateType{ get; set; }
+        public string UpdateType{ get; set; }
         public long UpdateCount{ get; set; }
         /*
          * public virtual Id {get;}

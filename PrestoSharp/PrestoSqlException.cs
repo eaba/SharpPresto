@@ -8,7 +8,7 @@ namespace PrestoSharp
         public QueryError QueryError { get; internal set; }
         internal PrestoSqlException(QueryError error) : base(error.Message)
         {
-            this.QueryError = error;
+            QueryError = error;
         }
 
         internal static PrestoSqlException Create(QueryError error)
@@ -24,13 +24,13 @@ namespace PrestoSharp
             }
         }
 
-        public string GetMessage() { return this.QueryError.Message; }
-        public string GetSqlState() { return this.QueryError.SqlState; }
-        public int GetErrorCode() { return this.QueryError.ErrorCode; }
-        public string GetErrorName() { return this.QueryError.ErrorName; }
-        public string GetErrorType() { return this.QueryError.ErrorType; }
-        public ErrorLocation GetErrorLocation() { return this.QueryError.ErrorLocation; }
-        public FailureInfo GetFailureInfo() { return this.QueryError.FailureInfo; }
+        public string GetMessage() { return QueryError.Message; }
+        public string GetSqlState() { return QueryError.SqlState; }
+        public int GetErrorCode() { return QueryError.ErrorCode; }
+        public string GetErrorName() { return QueryError.ErrorName; }
+        public string GetErrorType() { return QueryError.ErrorType; }
+        public ErrorLocation GetErrorLocation() { return QueryError.ErrorLocation; }
+        public FailureInfo GetFailureInfo() { return QueryError.FailureInfo; }
     }
 
 
