@@ -4,7 +4,9 @@ namespace PrestoSharp.v1
 {
     public class ClientTypeSignature
     {
-        public string PRESTO_RAW_TYPE;
-        public  List<ClientTypeSignatureParameter> PRESTO_ARGUMENTS;
+        public string RawType { get; set; }
+        //typeArguments[]
+        //literalArguments[]
+        public List<ClientTypeSignatureParameter> Arguments { get; set; }
     }
 }

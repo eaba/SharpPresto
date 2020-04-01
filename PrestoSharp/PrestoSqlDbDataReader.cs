@@ -105,7 +105,7 @@ namespace PrestoSharp
         public override Type GetFieldType(int ordinal)
         {
             if (ordinal >= 0 && ordinal < _mColumnCount)
-                return StandardTypes.MapType(_mColumns[ordinal].TypeSignature.PRESTO_RAW_TYPE);
+                return StandardTypes.MapType(_mColumns[ordinal].TypeSignature.RawType);
             else
                 return null;
         }
@@ -200,7 +200,7 @@ namespace PrestoSharp
 
         public override object GetValue(int ordinal)
         {
-            return StandardTypes.Convert(_mColumns[ordinal].TypeSignature.PRESTO_RAW_TYPE, _mFields[ordinal]);
+            return StandardTypes.Convert(_mColumns[ordinal].TypeSignature.RawType, _mFields[ordinal]);
         }
 
         public override int GetValues(object[] values)

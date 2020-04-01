@@ -23,7 +23,7 @@ namespace PrestoSharp.test
         {
             using DbConnection Conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://52.167.77.86:8081/"
+                ConnectionString = "http://52.167.77.86:8081"
             };
             Conn.Open();
 

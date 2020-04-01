@@ -2,8 +2,8 @@
 {
     public enum ParameterKind
     {
-        LongLiteral,
-        TypeSignature,
-        NamedTypeSignature
+        Long_Literal,
+        Type_Signature,
+        Named_Type_Signature
     }
 }
