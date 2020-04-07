@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using Xunit;
 using Xunit.Abstractions;
@@ -23,7 +24,7 @@ namespace PrestoSharp.test
         {
             using DbConnection Conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://52.167.77.86:8081"
+                ConnectionString = "http://52.177.28.96:8081"
             };
             Conn.Open();
 
@@ -47,15 +48,15 @@ namespace PrestoSharp.test
         {
             using DbConnection Conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://localhost:8081"
+                ConnectionString = "http://52.177.28.96:8081"
             };
             Conn.Open();
 
             using var Cmd = Conn.CreateCommand();
-            Cmd.CommandText = "show schemas in pulsar";
+            Cmd.CommandText = "show tables in pulsar.\"public/default\"";
 
             using var Reader = Cmd.ExecuteReader();
-            if (Reader.Read())
+            while (Reader.Read())
             {
                 for (var i = 0; i < Reader.FieldCount; i++)
                 {
@@ -69,16 +70,18 @@ namespace PrestoSharp.test
         [Fact]
         public void SingleResultTest()
         {
-            using DbConnection Conn = new PrestoSqlDbConnection();
-            Conn.ConnectionString = "http://localhost:8080";
+            using DbConnection Conn = new PrestoSqlDbConnection
+            {
+                ConnectionString = "http://52.177.28.96:8081"
+            };
             Conn.Open();
 
             using var Cmd = Conn.CreateCommand();
-            Cmd.CommandText = "SELECT 1";
+            Cmd.CommandText = "SELECT COUNT(*) FROM system.runtime.nodes";
 
             var v = Convert.ToInt32(Cmd.ExecuteScalar());
 
-            if (v != 1)
+            if (v <= 1)
                 Assert.False(false,"Invalid return value");
         }
 
@@ -118,21 +121,27 @@ namespace PrestoSharp.test
         [Fact]
         public void SecondTest()
         {
-            using DbConnection Conn = new PrestoSqlDbConnection();
-            Conn.ConnectionString = "http://localhost:8080";
+            using DbConnection Conn = new PrestoSqlDbConnection
+            {
+                ConnectionString = "http://52.177.28.96:8081"
+            };
             Conn.Open();
 
             using var Cmd = Conn.CreateCommand();
-            Cmd.CommandText = @"SELECT orderpriority, SUM(totalprice) AS totalprice
-FROM tpch.sf1.orders AS O
-INNER JOIN tpch.sf1.customer AS C ON O.custkey = C.custkey 
-GROUP BY orderpriority ORDER BY orderpriority";
+            Cmd.CommandText = "select * from pulsar.\"public/default\".students";
 
             using var Reader = Cmd.ExecuteReader();
             while (Reader.Read())
             {
+                var row = new List<string>();
                 for (var i = 0; i < Reader.FieldCount; i++)
-                    Console.Write(Reader[i]);
+                {
+                    var T = Reader.GetFieldType(i);
+                    var Value = Reader.GetValue(i).ToString();
+                    var col = Reader.GetName(i);
+                    row.Add($"{col}:{Value}");
+                }
+                _helper.WriteLine(string.Join(" - ", row));
             }
         }
     }
