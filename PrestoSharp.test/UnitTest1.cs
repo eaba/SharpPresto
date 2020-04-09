@@ -24,7 +24,7 @@ namespace PrestoSharp.test
         {
             using DbConnection Conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://52.177.28.96:8081"
+                ConnectionString = "http://20.44.73.47:8081"
             };
             Conn.Open();
 
@@ -48,7 +48,7 @@ namespace PrestoSharp.test
         {
             using DbConnection Conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://52.177.28.96:8081"
+                ConnectionString = "http://20.44.73.47:8081"
             };
             Conn.Open();
 
@@ -72,7 +72,7 @@ namespace PrestoSharp.test
         {
             using DbConnection Conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://52.177.28.96:8081"
+                ConnectionString = "http://20.44.73.47:8081"
             };
             Conn.Open();
 
@@ -123,7 +123,7 @@ namespace PrestoSharp.test
         {
             using DbConnection Conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://52.177.28.96:8081"
+                ConnectionString = "http://20.44.73.47:8081"
             };
             Conn.Open();
 
@@ -136,10 +136,16 @@ namespace PrestoSharp.test
                 var row = new List<string>();
                 for (var i = 0; i < Reader.FieldCount; i++)
                 {
-                    var T = Reader.GetFieldType(i);
-                    var Value = Reader.GetValue(i).ToString();
-                    var col = Reader.GetName(i);
-                    row.Add($"{col}:{Value}");
+                    try
+                    {
+                        var Value = Reader.GetValue(i).ToString();
+                        var col = Reader.GetName(i);
+                        row.Add($"{col} : {Value}");
+                    }
+                    catch (Exception e)
+                    {
+                       
+                    }
                 }
                 _helper.WriteLine(string.Join(" - ", row));
             }

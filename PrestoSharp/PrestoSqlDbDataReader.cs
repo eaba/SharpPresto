@@ -44,7 +44,8 @@ namespace PrestoSharp
 
                 if (_mColumns == null)
                 {
-                    if (Result != null) _mColumns = Result.Columns;
+                    if (Result != null)
+                        _mColumns = Columns(Result.Columns);
                     if (_mColumns != null)
                     {
                         _mColumnCount = _mColumns.Count;
@@ -213,6 +214,17 @@ namespace PrestoSharp
         public override bool IsDBNull(int ordinal)
         {
             return false;
+        }
+
+        private List<Column> Columns(List<Column> columns)
+        {
+            foreach (var column in columns)
+            {
+                var c = column.Name.Trim(new []{'_'});
+                column.Name = c;
+            }
+
+            return columns;
         }
     }
 }
