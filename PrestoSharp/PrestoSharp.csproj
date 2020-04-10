@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageProjectUrl>https://github.com/eaba/SharpPresto</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
