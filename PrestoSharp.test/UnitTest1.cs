@@ -152,5 +152,38 @@ namespace PrestoSharp.test
                 _helper.WriteLine(string.Join(" - ", row));
             }
         }
+
+        [Fact]
+        public void FilterTest()
+        {
+            using DbConnection Conn = new PrestoSqlDbConnection
+            {
+                ConnectionString = "http://40.65.210.106:8081"
+            };
+            Conn.Open();
+
+            using var Cmd = Conn.CreateCommand();
+            Cmd.CommandText = "select __producer_name__, __sequence_id__ from pulsar.\"public/default\".students";
+
+            using var Reader = Cmd.ExecuteReader();
+            while (Reader.Read())
+            {
+                var row = new List<string>();
+                for (var i = 0; i < Reader.FieldCount; i++)
+                {
+                    try
+                    {
+                        var Value = Reader.GetValue(i).ToString();
+                        var col = Reader.GetName(i);
+                        row.Add($"{col} : {Value}");
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
+                }
+                _helper.WriteLine(string.Join(" - ", row));
+            }
+        }
     }
 }
