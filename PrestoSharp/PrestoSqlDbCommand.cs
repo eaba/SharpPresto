@@ -43,8 +43,8 @@ namespace PrestoSharp
 
                 return Result;
             }
-            else
-                return null;
+
+            return null;
         }
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
@@ -69,8 +69,7 @@ namespace PrestoSharp
             using var Reader = ExecuteDbDataReader(CommandBehavior.SequentialAccess);
             if (Reader != null && Reader.Read())
                 return Reader[0];
-            else
-                return null;
+            return null;
         }
     }
 }

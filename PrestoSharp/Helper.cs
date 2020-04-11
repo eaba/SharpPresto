@@ -48,8 +48,8 @@ namespace PrestoSharp
                     var sr = new StreamReader(stream);
                     throw new Exception("ERROR: " + sr.ReadToEnd());
                 }
-                else
-                    throw new Exception("ERROR: " + ex.Message);
+
+                throw new Exception("ERROR: " + ex.Message);
 
             }
         }
@@ -92,8 +92,7 @@ namespace PrestoSharp
 
             if (IPAddress.TryParse(Data, out ip))
                 return ip;
-            else
-                return null;
+            return null;
         }
          
     }
