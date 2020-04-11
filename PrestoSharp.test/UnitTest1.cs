@@ -24,7 +24,7 @@ namespace PrestoSharp.test
         {
             using DbConnection Conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://20.44.73.47:8081"
+                ConnectionString = "http://40.65.210.106:8081"
             };
             Conn.Open();
 
@@ -48,7 +48,7 @@ namespace PrestoSharp.test
         {
             using DbConnection Conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://20.44.73.47:8081"
+                ConnectionString = "http://40.65.210.106:8081"
             };
             Conn.Open();
 
@@ -72,7 +72,7 @@ namespace PrestoSharp.test
         {
             using DbConnection Conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://20.44.73.47:8081"
+                ConnectionString = "http://40.65.210.106:8081"
             };
             Conn.Open();
 
@@ -90,7 +90,7 @@ namespace PrestoSharp.test
         public void ErrorTest()
         {
             using DbConnection Conn = new PrestoSqlDbConnection();
-            Conn.ConnectionString = "http://localhost:8080";
+            Conn.ConnectionString = "http://40.65.210.106:8081";
             Conn.Open();
 
             using var Cmd = Conn.CreateCommand();
@@ -104,8 +104,10 @@ namespace PrestoSharp.test
                     while (Reader.Read())
                     {
                         for (var i = 0; i < Reader.FieldCount; i++)
-                            Console.Write(Reader[i]);
-
+                        {
+                            var y = Reader[i];
+                            //_helper.WriteLine();
+                        }
                     }
                 }
 
@@ -123,7 +125,7 @@ namespace PrestoSharp.test
         {
             using DbConnection Conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://20.44.73.47:8081"
+                ConnectionString = "http://40.65.210.106:8081"
             };
             Conn.Open();
 

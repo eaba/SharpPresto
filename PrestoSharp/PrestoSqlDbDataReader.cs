@@ -36,37 +36,35 @@ namespace PrestoSharp
 
                 return true;
             }
-            else
+
+            var result = DbCommand.GetNextResult();
+            while (result != null && result.Data == null)
+                result = DbCommand.GetNextResult();
+
+            if (_mColumns == null)
             {
-                var Result = DbCommand.GetNextResult();
-                while (Result != null && Result.Data == null)
-                    Result = DbCommand.GetNextResult();
-
-                if (_mColumns == null)
+                if (result != null)
+                    _mColumns = result.Columns;
+                if (_mColumns != null)
                 {
-                    if (Result != null)
-                        _mColumns = Columns(Result.Columns);
-                    if (_mColumns != null)
-                    {
-                        _mColumnCount = _mColumns.Count;
-                        var i = 0;
-                        foreach (var col in _mColumns)
-                            _mColumnIndex.Add(col.Name, i++);
-                    }
+                    _mColumnCount = _mColumns.Count;
+                    var i = 0;
+                    foreach (var col in _mColumns)
+                        _mColumnIndex.Add(col.Name, i++);
                 }
-
-                if (Result != null)
-                {
-                    _mRows = Result.Data;
-                    _mRowCount += _mRows?.Count ?? 0;
-                    _mRowIndex = 0;
-                    _mFields = _mRows[_mRowIndex].ToArray();
-
-                    return true;
-                }
-                else
-                    return false;
             }
+
+            if (result != null)
+            {
+                _mRows = result.Data;
+                _mRowCount += _mRows?.Count ?? 0;
+                _mRowIndex = 0;
+                _mFields = _mRows[_mRowIndex].ToArray();
+
+                return true;
+            }
+
+            return false;
         }
 
         public override bool NextResult()
@@ -74,49 +72,34 @@ namespace PrestoSharp
             return false;
         }
 
-        public override object this[int ordinal]
-        {
-            get { return _mFields[ordinal]; }
-        }
+        public override object this[int ordinal] => _mFields[ordinal];
 
-        public override object this[string name]
-        {
-            get
-            {
-                if (_mColumnIndex.ContainsKey(name))
-                    return _mFields[_mColumnIndex[name]];
-                else
-                    return null;
-            }
-        }
+        public override object this[string name] => _mColumnIndex.ContainsKey(name) ? _mFields[_mColumnIndex[name]] : null;
 
-        public override int Depth { get { return 0; } }
-        public override int FieldCount { get { return _mColumnCount; } }
-        public override bool HasRows { get { return _mRowCount > 0; } }
-        public override bool IsClosed { get { return false; } }
-        public override int RecordsAffected { get { return _mRowCount; } }
+        public override int Depth => 0;
+        public override int FieldCount => _mColumnCount;
+        public override bool HasRows => _mRowCount > 0;
+        public override bool IsClosed => false;
+        public override int RecordsAffected => _mRowCount;
 
         public override string GetName(int ordinal)
         {
             if (ordinal >= 0 && ordinal < _mColumnCount)
                 return _mColumns[ordinal].Name;
-            else
-                return null;
+            return null;
         }
         public override Type GetFieldType(int ordinal)
         {
             if (ordinal >= 0 && ordinal < _mColumnCount)
                 return StandardTypes.MapType(_mColumns[ordinal].TypeSignature.RawType);
-            else
-                return null;
+            return null;
         }
 
         public override int GetOrdinal(string name)
         {
             if (_mColumnIndex.ContainsKey(name))
                 return _mColumnIndex[name];
-            else
-                return -1;
+            return -1;
         }
 
         public override bool GetBoolean(int ordinal)
@@ -216,15 +199,5 @@ namespace PrestoSharp
             return false;
         }
 
-        private List<Column> Columns(List<Column> columns)
-        {
-            foreach (var column in columns)
-            {
-                var c = column.Name.Trim(new []{'_'});
-                column.Name = c;
-            }
-
-            return columns;
-        }
     }
 }

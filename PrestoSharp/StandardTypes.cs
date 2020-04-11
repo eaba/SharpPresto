@@ -74,34 +74,32 @@ namespace PrestoSharp
         {
             if (_mTypeMapping.ContainsKey(typeName))
                 return _mTypeMapping[typeName];
-            else
-                return Type.Missing.GetType();
+            return Type.Missing.GetType();
         }
 
         internal static object Convert(string typeName, object Obj)
         {
             if (typeName == VARBINARY)
                 return System.Convert.FromBase64String((string)Obj);
-            else if (typeName == TIME_WITH_TIME_ZONE)
+            if (typeName == TIME_WITH_TIME_ZONE)
                 return Helper.ParseTimeWithTimeZone((string)Obj);
-            else if (typeName == TIMESTAMP_WITH_TIME_ZONE)
+            if (typeName == TIMESTAMP_WITH_TIME_ZONE)
                 return Helper.ParseTimeWithTimeZone((string)Obj);
-            else if (typeName == INTERVAL_YEAR_TO_MONTH)
+            if (typeName == INTERVAL_YEAR_TO_MONTH)
                 return Helper.ParseIntervalYearToMonth((string)Obj);
-            else if (typeName == INTERVAL_DAY_TO_SECOND)
+            if (typeName == INTERVAL_DAY_TO_SECOND)
                 return Helper.ParseIntervalDayToSecond((string)Obj);
-            else if (typeName == ARRAY)
+            if (typeName == ARRAY)
                 return ((JArray)Obj).ToObject<object[]>();
-            else if (typeName == MAP)
+            if (typeName == MAP)
                 return Helper.ParseDictionary((JObject)Obj);
-            else if (typeName == ROW)
+            if (typeName == ROW)
                 return Obj; // TODO: Parse Row
-            else if (typeName == JSON)
+            if (typeName == JSON)
                 return ((JToken)Obj);
-            else if (typeName == IPADDRESS)
+            if (typeName == IPADDRESS)
                 return Helper.ParseIpAddress((string)Obj);
-            else
-                return System.Convert.ChangeType(Obj, MapType(typeName));
+            return System.Convert.ChangeType(Obj, MapType(typeName));
         }
 
     }
