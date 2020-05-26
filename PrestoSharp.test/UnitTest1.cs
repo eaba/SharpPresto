@@ -22,23 +22,24 @@ namespace PrestoSharp.test
         [Fact]
         public void FirstTest()
         {
-            using DbConnection Conn = new PrestoSqlDbConnection
+            using DbConnection conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://40.65.210.106:8081"
+                ConnectionString = "http://localhost:8081"
             };
-            Conn.Open();
+            conn.Open();
 
-            using var Cmd = Conn.CreateCommand();
-            Cmd.CommandText = "show catalogs";
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "select SequenceNr from pulsar.\"public/default\".journal WHERE PersistenceId = 'sampleActor' ORDER BY SequenceNr DESC LIMIT 1";
 
-            using var Reader = Cmd.ExecuteReader();
-            if (Reader.Read())
+            using var reader = cmd.ExecuteReader();
+            var rows = reader.RecordsAffected;
+            if (reader.Read())
             {
-                for (var i = 0; i < Reader.FieldCount; i++)
+                for (var i = 0; i < reader.FieldCount; i++)
                 {
-                    var T = Reader.GetFieldType(i);
-                    var Value = Reader.GetValue(i);
-                    _helper.WriteLine(Value.ToString());
+                    var T = reader.GetFieldType(i);
+                    var value = reader.GetValue(i);
+                    _helper.WriteLine(value.ToString());
                 }
             }
         }
@@ -46,23 +47,24 @@ namespace PrestoSharp.test
         [Fact]
         public void Schema()
         {
-            using DbConnection Conn = new PrestoSqlDbConnection
+            using DbConnection conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://40.65.210.106:8081"
+                ConnectionString = "http://localhost:8081"
             };
-            Conn.Open();
+            conn.Open();
 
-            using var Cmd = Conn.CreateCommand();
-            Cmd.CommandText = "show tables in pulsar.\"public/default\"";
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "show tables in pulsar.\"public/default\"";
 
-            using var Reader = Cmd.ExecuteReader();
-            while (Reader.Read())
+            using var reader = cmd.ExecuteReader();
+            var rows = reader.RecordsAffected;
+            while (reader.Read())
             {
-                for (var i = 0; i < Reader.FieldCount; i++)
+                for (var i = 0; i < reader.FieldCount; i++)
                 {
-                    var T = Reader.GetFieldType(i);
-                    var Value = Reader.GetValue(i);
-                    _helper.WriteLine(Value.ToString());
+                    var T = reader.GetFieldType(i);
+                    var value = reader.GetValue(i);
+                    _helper.WriteLine(value.ToString());
                 }
             }
         }
@@ -70,16 +72,17 @@ namespace PrestoSharp.test
         [Fact]
         public void SingleResultTest()
         {
-            using DbConnection Conn = new PrestoSqlDbConnection
+            using DbConnection conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://40.65.210.106:8081"
+                ConnectionString = "http://localhost:8081"
             };
-            Conn.Open();
+            conn.Open();
 
-            using var Cmd = Conn.CreateCommand();
-            Cmd.CommandText = "SELECT COUNT(*) FROM system.runtime.nodes";
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "select SequenceNr from pulsar.\"public/default\".journal WHERE PersistenceId = 'sampleActor' ORDER BY SequenceNr DESC LIMIT 1";
 
-            var v = Convert.ToInt32(Cmd.ExecuteScalar());
+            var v = Convert.ToInt32(cmd.ExecuteScalar());
+            _helper.WriteLine(v.ToString());
 
             if (v <= 1)
                 Assert.False(false,"Invalid return value");
@@ -89,23 +92,23 @@ namespace PrestoSharp.test
         [Fact]
         public void ErrorTest()
         {
-            using DbConnection Conn = new PrestoSqlDbConnection();
-            Conn.ConnectionString = "http://40.65.210.106:8081";
-            Conn.Open();
+            using DbConnection conn = new PrestoSqlDbConnection();
+            conn.ConnectionString = "http://localhost:8081";
+            conn.Open();
 
-            using var Cmd = Conn.CreateCommand();
-            Cmd.CommandText = @"ERROR HERE!";
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"ERROR HERE!";
 
 
             try
             {
-                using (var Reader = Cmd.ExecuteReader())
+                using (var reader = cmd.ExecuteReader())
                 {
-                    while (Reader.Read())
+                    while (reader.Read())
                     {
-                        for (var i = 0; i < Reader.FieldCount; i++)
+                        for (var i = 0; i < reader.FieldCount; i++)
                         {
-                            var y = Reader[i];
+                            var y = reader[i];
                             //_helper.WriteLine();
                         }
                     }
@@ -123,26 +126,27 @@ namespace PrestoSharp.test
         [Fact]
         public void SecondTest()
         {
-            using DbConnection Conn = new PrestoSqlDbConnection
+            using DbConnection conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://40.65.210.106:8081"
+                ConnectionString = "http://localhost:8081"
             };
-            Conn.Open();
+            conn.Open();
 
-            using var Cmd = Conn.CreateCommand();
-            Cmd.CommandText = "select * from pulsar.\"public/default\".students";
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "select * from pulsar.\"public/default\".journal";
 
-            using var Reader = Cmd.ExecuteReader();
-            while (Reader.Read())
+            using var reader = cmd.ExecuteReader();
+            var rows = reader.RecordsAffected;
+            while (reader.Read())
             {
                 var row = new List<string>();
-                for (var i = 0; i < Reader.FieldCount; i++)
+                for (var i = 0; i < reader.FieldCount; i++)
                 {
                     try
                     {
-                        var Value = Reader.GetValue(i).ToString();
-                        var col = Reader.GetName(i);
-                        row.Add($"{col} : {Value}");
+                        var value = reader.GetValue(i).ToString();
+                        var col = reader.GetName(i);
+                        row.Add($"{col} : {value}");
                     }
                     catch (Exception e)
                     {
@@ -156,26 +160,26 @@ namespace PrestoSharp.test
         [Fact]
         public void FilterTest()
         {
-            using DbConnection Conn = new PrestoSqlDbConnection
+            using DbConnection conn = new PrestoSqlDbConnection
             {
-                ConnectionString = "http://40.65.210.106:8081"
+                ConnectionString = "http://localhost:8081"
             };
-            Conn.Open();
+            conn.Open();
 
-            using var Cmd = Conn.CreateCommand();
-            Cmd.CommandText = "select __producer_name__, __sequence_id__ from pulsar.\"public/default\".students";
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "select __producer_name__, __sequence_id__ from pulsar.\"public/default\".students";
 
-            using var Reader = Cmd.ExecuteReader();
-            while (Reader.Read())
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
                 var row = new List<string>();
-                for (var i = 0; i < Reader.FieldCount; i++)
+                for (var i = 0; i < reader.FieldCount; i++)
                 {
                     try
                     {
-                        var Value = Reader.GetValue(i).ToString();
-                        var col = Reader.GetName(i);
-                        row.Add($"{col} : {Value}");
+                        var value = reader.GetValue(i).ToString();
+                        var col = reader.GetName(i);
+                        row.Add($"{col} : {value}");
                     }
                     catch (Exception e)
                     {

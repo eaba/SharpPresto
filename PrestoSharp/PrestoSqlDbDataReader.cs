@@ -24,7 +24,7 @@ namespace PrestoSharp
         {
             DbCommand = Command;
         }
-
+        
 
         public override bool Read()
         {

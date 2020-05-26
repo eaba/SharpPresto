@@ -50,20 +50,20 @@ namespace PrestoSharp
 
         internal QueryResults ExecuteQuery(string Query)
         {
-            var Headers = new WebHeaderCollection
+            var headers = new WebHeaderCollection
             {
                 {"Content-Type", "application/json"},
                 {"Accept", "application/json"},
                 {PrestoHeaders.PRESTO_USER, "sharppresto"}
             };
 
-            return Helper.HttpRequest<QueryResults>("POST", ConnectionString + "/v1/statement", Query, Headers);
+            return Helper.HttpRequest<QueryResults>("POST", ConnectionString + "/v1/statement", Query, headers);
         }
 
         internal QueryResults GetNextResult(Uri nextUri)
         {
-            var Headers = new WebHeaderCollection {{"Accept", "application/json"}};
-            var result = Helper.HttpRequest<QueryResults>("GET", nextUri.ToString(), "", Headers);
+            var headers = new WebHeaderCollection {{"Accept", "application/json"}};
+            var result = Helper.HttpRequest<QueryResults>("GET", nextUri.ToString(), "", headers);
             return result;
         }
 

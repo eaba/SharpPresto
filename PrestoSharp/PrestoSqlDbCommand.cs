@@ -46,29 +46,28 @@ namespace PrestoSharp
 
             return null;
         }
-
+        
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
             Result = ((PrestoSqlDbConnection)DbConnection).ExecuteQuery(CommandText);
-
             return new PrestoSqlDbDataReader(this);
         }
-
+        
         public override int ExecuteNonQuery()
         {
-            var Rows = 0;
+            var rows = 0;
 
-            using var Reader = ExecuteDbDataReader(CommandBehavior.SequentialAccess);
-            while (Reader != null && Reader.Read())
-                Rows++;
-            return Rows;
+            using var reader = ExecuteDbDataReader(CommandBehavior.SequentialAccess);
+            while (reader != null && reader.Read())
+                rows++;
+            return rows;
         }
 
         public override object ExecuteScalar()
         {
-            using var Reader = ExecuteDbDataReader(CommandBehavior.SequentialAccess);
-            if (Reader != null && Reader.Read())
-                return Reader[0];
+            using var reader = ExecuteDbDataReader(CommandBehavior.SequentialAccess);
+            if (reader != null && reader.Read())
+                return reader[0];
             return null;
         }
     }

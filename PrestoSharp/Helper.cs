@@ -78,12 +78,12 @@ namespace PrestoSharp
 
         internal static Dictionary<string, object> ParseDictionary(JObject Obj)
         {
-            var List = new Dictionary<string, object>();
+            var list = new Dictionary<string, object>();
 
-            foreach (var Item in Obj.Properties())
-                List.Add(Item.Name, Item.Value);
+            foreach (var item in Obj.Properties())
+                list.Add(item.Name, item.Value);
 
-            return List;
+            return list;
         }
 
         internal static IPAddress ParseIpAddress(string Data)
