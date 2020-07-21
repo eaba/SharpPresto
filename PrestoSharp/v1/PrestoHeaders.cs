@@ -15,6 +15,8 @@
         public static string PRESTO_SET_SCHEMA = "X-Presto-Set-Schema";
         public static string PRESTO_SET_PATH = "X-Presto-Set-Path";
         public static string PRESTO_SET_SESSION = "X-Presto-Set-Session";
+        public static string PRESTO_SET_ROLE = "X-Presto-Set-Role";
+        public static string PRESTO_ROLE = "X-Presto-Role";
         public static string PRESTO_CLEAR_SESSION = "X-Presto-Clear-Session";
         public static string PRESTO_PREPARED_STATEMENT = "X-Presto-Prepared-Statement";
         public static string PRESTO_ADDED_PREPARE = "X-Presto-Added-Prepare";
@@ -26,6 +28,7 @@
         public static string PRESTO_CLIENT_TAGS = "X-Presto-Client-Tags";
         public static string PRESTO_CLIENT_CAPABILITIES = "X-Presto-Client-Capabilities";
         public static string PRESTO_RESOURCE_ESTIMATE = "X-Presto-Resource-Estimate";
+        public static string PRESTO_EXTRA_CREDENTIAL = "X-Presto-Extra-Credential";
 
         public static string PRESTO_CURRENT_STATE = "X-Presto-Current-State";
         public static string PRESTO_MAX_WAIT = "X-Presto-Max-Wait";
